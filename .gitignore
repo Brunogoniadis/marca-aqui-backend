@@ -1,1 +1,11 @@
+# Dependências instaladas
 node_modules
+
+# Arquivos de log
+npm-debug.log
+
+# Arquivos de compilação
+/build/
+
+# Variáveis de ambiente
+.env
