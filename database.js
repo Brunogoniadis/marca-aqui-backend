@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const URI = 'mongodb+srv://salaoUser:4Ptc8RwMGdLJ2NRs@clustermarcaaquidev.fn78gmb.mongodb.net/?retryWrites=true&w=majority&appName=ClusterMarcaAquiDev';
+const URI = 'mongodb+srv://salaoUser:4Ptc8RwMGdLJ2NRs@clustermarcaaquidev.fn78gmb.mongodb.net/marca-aqui?retryWrites=true&w=majority&appName=ClusterMarcaAquiDev';
 //ver dotenv
 
 
