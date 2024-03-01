@@ -29,7 +29,7 @@ const colaborador = new Schema({
   },
   sexo: {
     type: String,
-    enum:['M','F'],
+    enum: ['M', 'F'],
     required: true
   },
   status: {
@@ -37,6 +37,10 @@ const colaborador = new Schema({
     enum: ['A', 'I'],
     required: true,
     default: 'A'
+  },
+  dataCadastro: {
+    type: Date,
+    default: Date.now
   }
 })
 
