@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const morgan = require('morgan')
+const morgan = require('morgan');
+require('./database')
 
 // Middlewares
 app.use(morgan('dev'))

@@ -3,38 +3,31 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const salao = new Schema({
-    nome: {
-        type: String,
-        required: [true, 'Nome é obrigatório']
-    },
+    nome: String,
     foto: String,
     capa: String,
-    email: {
-        type: String,
-        require: [true, 'Campo é obrigatório']
-    },
-    senha: {
-        type: String,
-        default: null
-    },
+    email: String,
+    senha: String,
     telefone: String,
+    recipientId: String,
     endereco: {
         cidade: String,
         uf: String,
         cep: String,
+        logradouro: String,
         numero: String,
         pais: String,
     },
     geo: {
-        tipo: String,
-        coordinates: Array
+        type: String,
+        coordinates: [],
     },
     dataCadastro: {
         type: Date,
-        default: Date.now
-    }
-})
+        default: Date.now,
+    },
+});
 
-salao.index({ geo: '2dsphere' })
+salao.index({ coordenadas: '2dsphere' });
 
-module.exports = mongoose.model('Salao', salao)
+module.exports = mongoose.model('Salao', salao);

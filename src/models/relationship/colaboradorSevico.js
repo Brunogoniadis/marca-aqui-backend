@@ -2,20 +2,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const salaoColaborador = new Schema({
-    salaoId: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Salao',
-        required: true,
-    },
+const colaboradorServico = new Schema({
     colaboradorId: {
         type: mongoose.Types.ObjectId,
         ref: 'Colaborador',
         required: true,
     },
+    servicoId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Servico',
+        required: true,
+    },
     status: {
         type: String,
-        enum: ['A', 'I', 'E'],
+        enum: ['A', 'I'],
         required: true,
         default: 'A',
     },
@@ -25,4 +25,4 @@ const salaoColaborador = new Schema({
     },
 });
 
-module.exports = mongoose.model('SalaoColaborador', salaoColaborador);
+module.exports = mongoose.model('ColaboradorServico', colaboradorServico);

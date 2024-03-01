@@ -5,58 +5,64 @@ const Schema = mongoose.Schema;
 const cliente = new Schema({
     nome: {
         type: String,
-        required: true
+        required: true,
     },
     telefone: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     senha: {
         type: String,
-        required: true
-    },
-    foto: {
-        type: String,
-        required: true
+        default: null,
     },
     dataNascimento: {
         type: String,
-        required: true
+        required: true,
     },
     sexo: {
         type: String,
         enum: ['M', 'F'],
-        required: true
+        required: true,
     },
     status: {
         type: String,
         enum: ['A', 'I'],
         required: true,
-        default: 'A'
+        default: 'A',
     },
     documento: {
         tipo: {
             type: String,
-            enum: ['individual', 'corporation'],
-            required: true
+            enum: ['cpf', 'cnpj'],
+            required: true,
         },
         numero: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
+    },
+    customerId: {
+        type: String,
+        required: true,
     },
     endereco: {
         cidade: String,
         uf: String,
         cep: String,
+        logradouro: String,
         numero: String,
         pais: String,
     },
-})
+    dataCadastro: {
+        type: Date,
+        default: Date.now,
+    },
+});
 
-
-module.exports = mongoose.model('Cliente', cliente)
+module.exports = mongoose.model('Cliente', cliente);

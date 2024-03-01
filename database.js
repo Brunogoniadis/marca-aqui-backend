@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
-const URI = '';
+const URI = 'mongodb+srv://salaoUser:4Ptc8RwMGdLJ2NRs@clustermarcaaquidev.fn78gmb.mongodb.net/?retryWrites=true&w=majority&appName=ClusterMarcaAquiDev';
+//ver dotenv
 
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useUnifiedTopology', true);
 
 mongoose
     .connect(URI)
