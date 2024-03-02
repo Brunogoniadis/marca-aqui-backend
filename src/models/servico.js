@@ -1,4 +1,5 @@
-/* cSpell:disable */const mongoose = require('mongoose');
+/* cSpell:disable */
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const servico = new Schema({
@@ -44,3 +45,5 @@ const servico = new Schema({
 });
 
 module.exports = mongoose.model('Servico', servico);
+
+
