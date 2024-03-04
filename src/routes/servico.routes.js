@@ -87,8 +87,8 @@ router.put('/:id', upload.any(), async (req, res) => {
         // Atualizar Serviço
         const updatedServico = await Servico.findByIdAndUpdate(
             req.params.id,
-            JSON.parse(servico), 
-            { new: true, runValidators: true } 
+            JSON.parse(servico),
+            { new: true, runValidators: true }
         );
 
         // CRIAR ARQUIVO
@@ -104,6 +104,25 @@ router.put('/:id', upload.any(), async (req, res) => {
         res.json({ error: true, message: err.message });
     }
 });
+
+router.post('/delete-arquivo', async (req, res) => {
+    try {
+        const { id } = req.body;
+
+        // APAGAR ITEM NA AWS
+        await aws.deleteFileS3(id);
+
+        await Arquivo.findOneAndDelete({
+            caminho: id,
+        });
+
+        res.json({ error: false });
+
+    } catch (err) {
+        res.json({ error: true, message: err.message });
+    }
+});
+
 
 
 module.exports = router;
