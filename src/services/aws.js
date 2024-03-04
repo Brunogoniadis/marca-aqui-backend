@@ -9,7 +9,6 @@ module.exports = {
     uploadToS3: function (file, filename, acl = 'public-read') {
 
 
-        console.log('file here:', file)
 
 
         return new Promise((resolve, reject) => {
@@ -32,14 +31,11 @@ module.exports = {
                 };
 
 
-                console.log('params here', params)
 
                 s3bucket.upload(params, function (err, data) {
                     if (err) {
-                        console.log(err);
                         return resolve({ error: true, message: err.message });
                     }
-                    console.log(data);
                     return resolve({ error: false, message: data });
                 });
             });
@@ -63,10 +59,8 @@ module.exports = {
                     Key: key
                 }, function (err, data) {
                     if (err) {
-                        console.log(err);
                         return resolve({ error: true, message: err.message });
                     }
-                    console.log(data);
                     return resolve({ error: false, message: data });
                 })
             })
