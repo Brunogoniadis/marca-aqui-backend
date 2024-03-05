@@ -105,6 +105,33 @@ router.put('/:id', upload.any(), async (req, res) => {
     }
 });
 
+router.get('/salao/:salaoId', async (req, res) => {
+    try {
+        const { salaoId } = req.params;
+
+        let servicosSalao = [];
+        const servicos = await Servico.find({
+            salaoId,
+            status: { $ne: 'E' }
+        });
+        console.log('servicos', servicos)
+
+        for (let servico of servicos) {
+            const arquivos = await Arquivo.find({
+                model: 'Servico',
+                referenciaId: servico._id
+            });
+            servicosSalao.push({ ...servico._doc, arquivos });
+        }
+
+        res.json({ servicos: servicosSalao });
+
+    } catch (error) {
+        res.json({ error: true, message: error.message });
+    }
+});
+
+
 router.post('/delete-arquivo', async (req, res) => {
     try {
         const { id } = req.body;
