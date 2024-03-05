@@ -19,9 +19,17 @@ const salao = new Schema({
         pais: String,
     },
     geo: {
-        type: String,
-        coordinates: [],
+        type: {
+            type: String,
+            enum: ['Point'], 
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number],
+            index: '2dsphere'
+        }
     },
+
     dataCadastro: {
         type: Date,
         default: Date.now,

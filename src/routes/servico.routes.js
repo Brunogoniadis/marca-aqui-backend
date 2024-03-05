@@ -110,9 +110,10 @@ router.get('/salao/:salaoId', async (req, res) => {
         const { salaoId } = req.params;
 
         let servicosSalao = [];
+
         const servicos = await Servico.find({
             salaoId,
-            status: { $ne: 'E' }
+            status: 'A'
         });
         console.log('servicos', servicos)
 
@@ -124,7 +125,10 @@ router.get('/salao/:salaoId', async (req, res) => {
             servicosSalao.push({ ...servico._doc, arquivos });
         }
 
-        res.json({ servicos: servicosSalao });
+        res.json({
+            error: false,
+            servicos: servicos.map((s) => ({ label: s.titulo, value: s._id }))
+        });
 
     } catch (error) {
         res.json({ error: true, message: error.message });
