@@ -37,14 +37,13 @@ const colaborador = new Schema({
   },
   status: {
     type: String,
-    enum: ['A', 'I'],
+    enum: ['A', 'I', 'E'],
     required: true,
     default: 'A',
   },
   contaBancaria: {
     titular: {
       type: String,
-      required: true,
     },
     cpfCnpj: {
       type: String,
@@ -52,28 +51,22 @@ const colaborador = new Schema({
     },
     banco: {
       type: String,
-      required: true,
     },
     tipo: {
       type: String,
-      required: true,
     },
     agencia: {
       type: String,
-      required: true,
     },
     numero: {
       type: String,
-      required: true,
     },
     dv: {
       type: String,
-      required: true,
     },
   },
   recipientId: {
     type: String,
-    required: true,
   },
   dataCadastro: {
     type: Date,
@@ -81,4 +74,4 @@ const colaborador = new Schema({
   },
 });
 
-module.exports = mongoose.model('Colaborador', colaborador);
+module.exports = mongoose.model('Colaborador', colaborador, 'colaborador');

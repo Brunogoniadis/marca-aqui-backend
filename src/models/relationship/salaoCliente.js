@@ -25,4 +25,4 @@ const salaoCliente = new Schema({
     },
 });
 
-module.exports = mongoose.model('SalaoCliente', salaoCliente);
+module.exports = mongoose.model('SalaoCliente', salaoCliente, 'salaoCliente');
