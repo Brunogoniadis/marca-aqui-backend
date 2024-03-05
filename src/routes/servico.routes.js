@@ -123,6 +123,16 @@ router.post('/delete-arquivo', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Servico.findByIdAndUpdate(id, { status: 'E' })
+
+        res.json({ error: false })
+    } catch (error) {
+        res.json({ error: true, message: err.message });
+    }
+})
 
 
 module.exports = router;
