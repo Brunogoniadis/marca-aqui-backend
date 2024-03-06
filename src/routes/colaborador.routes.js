@@ -68,4 +68,33 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.put('/:colaboradorId', async (req, res) => {
+    try {
+        const { vinculo, vinculoId, especialidades } = req.body;
+        const { colaboradorId } = req.params;
+
+        //vinculo
+        await SalaoColaborador.findByIdAndUpdate(vinculoId, { status: vinculo })
+
+
+        //especialidades
+        await ColaboradorServico.deleteMany({
+            colaboradorId,
+        })
+        await ColaboradorServico.insertMany(
+            especialidades.map(
+                (servicoId) => ({
+                    servicoId,
+                    colaboradorId
+                })
+            )
+        )
+
+        res.json({ error: false });
+    } catch (err) {
+        res.json({ error: true, message: err.message });
+    }
+});
+
+
 module.exports = router

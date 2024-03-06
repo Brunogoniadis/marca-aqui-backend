@@ -25,4 +25,5 @@ const colaboradorServico = new Schema({
     },
 });
 
-module.exports = mongoose.model('ColaboradorServico', colaboradorServico, 'colaboradorServico');
+module.exports = mongoose.model('ColaboradorServico', colaboradorServico);
+
