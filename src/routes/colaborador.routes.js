@@ -76,7 +76,6 @@ router.put('/:colaboradorId', async (req, res) => {
         //vinculo
         await SalaoColaborador.findByIdAndUpdate(vinculoId, { status: vinculo })
 
-
         //especialidades
         await ColaboradorServico.deleteMany({
             colaboradorId,
@@ -95,6 +94,32 @@ router.put('/:colaboradorId', async (req, res) => {
         res.json({ error: true, message: err.message });
     }
 });
+
+router.delete('/vinculo/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await SalaoColaborador.findByIdAndUpdate(id, { status: 'E' });
+        res.json({ error: false });
+    } catch (err) {
+        res.json({ error: true, message: err.message });
+    }
+});
+
+router.post('/filter', async (req, res) => {
+    try {
+
+        const colaboradores = await Colaborador.find(req.body.filters)
+        res.json({ error: false, message: colaboradores });
+
+
+    } catch (err) {
+        res.json({ error: true, message: err.message });
+    }
+}
+)
+
+
 
 
 module.exports = router
