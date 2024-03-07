@@ -48,7 +48,8 @@ const cliente = new Schema({
         },
     },
     customerId: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        
         required: true,
     },
     endereco: {
