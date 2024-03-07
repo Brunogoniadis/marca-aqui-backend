@@ -1,9 +1,9 @@
 /* cSpell:disable */
 const express = require('express');
 const router = express.Router();
-const horario = require('../models/horario');
 const Horario = require('../models/horario');
 const ColaboradorServico = require('../models/relationship/colaboradorSevico')
+const _ = require("lodash")
 router.post('/', async (req, res) => {
     try {
         const horario = await new Horario(req.body).save()
@@ -46,10 +46,13 @@ router.post('/colaboradores', async (req, res) => {
             status: 'A'
         }).populate('colaboradorId', 'nome').select('colaboradorId -_id');
 
-        const listaColaboradores = colaboradorServico.map(vinculo => ({
-            label: vinculo.colaboradorId.nome,
-            value: vinculo.colaboradorId._id
-        }));
+        const listaColaboradores =
+            _.uniqBy(colaboradorServico, (vinculo) =>
+                vinculo.colaboradorId._id.toString()
+            ).map(vinculo => ({
+                label: vinculo.colaboradorId.nome,
+                value: vinculo.colaboradorId._id
+            }));
 
         res.json({ error: false, listaColaboradores })
     } catch (err) {
