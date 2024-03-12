@@ -43,7 +43,6 @@ const agendamento = new Schema({
     },
     transactionId: {
         type: String,
-        required: true,
     },
     dataCadastro: {
         type: Date,
