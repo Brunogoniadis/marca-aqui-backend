@@ -7,7 +7,8 @@ const Salao = require('../models/salao');
 const Servico = require('../models/servico');
 const Colaborador = require('../models/colaborador');
 const Agendamento = require('../models/agendamento')
-const util = require('../util')
+const util = require('../util');
+const moment = require('moment/moment');
 
 router.post('/', async (req, res) => {
     try {
@@ -65,6 +66,38 @@ router.post('/', async (req, res) => {
         res.json({ error: true, message: err.message })
 
     }
+})
+
+router.post('/filter', async (req, res) => {
+    try {
+
+        const { periodo, salaoId } = req.body;
+
+
+        const agendamento = await Agendamento.find({
+            status: 'A',
+            salaoId,
+            data: {
+                $gte: moment(periodo.inicio).startOf('day'),
+                $lte: moment(periodo.final).startOf('day')
+            }
+        }).populate([
+            { path: 'servicoId', select: 'titulo duracao' },
+            { path: 'colaboradorId', select: 'nome' },
+            { path: 'clienteId', select: 'nome' }
+
+
+        ])
+
+        res.json({ error: true, message: agendamento })
+
+
+    } catch (err) {
+
+        res.json({ error: true, message: err.message })
+
+    }
+
 })
 
 module.exports = router
