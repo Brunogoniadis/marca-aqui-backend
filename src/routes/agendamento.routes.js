@@ -7,6 +7,8 @@ const Salao = require('../models/salao');
 const Servico = require('../models/servico');
 const Colaborador = require('../models/colaborador');
 const Agendamento = require('../models/agendamento')
+const Horario = require('../models/horario')
+
 const util = require('../util');
 const moment = require('moment/moment');
 
@@ -40,6 +42,8 @@ router.post('/', async (req, res) => {
         //RECUPERAR SERVICO
         const servico = await Servico.findById(servicoId).select
             ('preco titulo comissao');
+
+
 
         //RECUPERAR COLABORADOR
         const colaborador = await Colaborador.findById(colaboradorId).select
@@ -99,5 +103,30 @@ router.post('/filter', async (req, res) => {
     }
 
 })
+
+router.post('/dias-disponiveis', async (req, res) => {
+    try {
+        const { data, salaoId, servicoId } = req.body;
+        const horarios = await Horario.find({ salaoId });
+        const servico = await Servico.findById(servicoId).select('duracao');
+
+
+        let agenda = [];
+        let lastDay = moment(data);
+
+        
+        // DURAÇÃO DO SERVIÇO      
+        const servicoDuracao = util.hoursToMinutes(
+            moment(servico.duracao).format('HH:mm')
+        );
+        res.json({ error: false, servicoDuracao })
+    } catch (err) {
+
+        res.json({ error: true, message: err.message })
+
+    }
+
+})
+
 
 module.exports = router
