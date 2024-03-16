@@ -8,6 +8,7 @@ const Servico = require('../models/servico');
 const Colaborador = require('../models/colaborador');
 const Agendamento = require('../models/agendamento')
 const Horario = require('../models/horario')
+const _ = require('lodash')
 
 const util = require('../util');
 const moment = require('moment/moment');
@@ -112,7 +113,9 @@ router.post('/dias-disponiveis', async (req, res) => {
 
 
         let agenda = []
+        let colaboradores = []
         let lastDay = moment(data)
+
 
         const servicoMinutos = util.hourToMinutes(
             moment(servico.duracao).format('HH:mm')
@@ -120,7 +123,7 @@ router.post('/dias-disponiveis', async (req, res) => {
 
         const servicoDuracao = moment.duration(servicoMinutos, 'minutes');
 
-        const servicoDuracaoSlots = util.sliceMinutes(
+        const servicoSlots = util.sliceMinutes(
             moment(servico.duracao),
             moment(servico.duracao).add(servicoDuracao, 'minutes'),
             util.SLOT_DURATION,
@@ -177,18 +180,70 @@ router.post('/dias-disponiveis', async (req, res) => {
                             $gte: moment(lastDay).startOf('day'),
                             $lte: moment(lastDay).endOf('day'),
                         },
-                    })
+                    }).select('data serviciUd -_id')
+                        .populate('servicoId', 'duracao')
 
-                    let horariosOcupado = agendamentos.map((a) => ({
+                    let horariosOcupados = agendamentos.map((a) => ({
                         inicio: moment(a.data),
                         fim: moment(a.data).add(servicoDuracao, 'minutes'),
                     }));
 
+                    /* RECUPERAR SLOTS ENTRE AGENDAMENTOS */
 
+                    horariosOcupados = horariosOcupados
+                        .map((h) =>
+                            util.sliceMinutes(
+                                h.inicio,
+                                h.fim,
+                                util.SLOT_DURATION,
+                                false
+                            )
+                        )
+                        .flat();
+                    console.log(horariosOcupados)
 
-                    console.log(horariosOcupado)
+                    /* REMOVER HORARIOS OCUPADOS */
+                    let horariosLivres = util.splitByValue(
+                        _.uniq(
+                            todosHorariosDia[colaboradorId].map((h) => {
+                                return horariosOcupados.includes(h) ? '-' : h;
+                            })
+                        ),
+                        '-'
+                    );
+                    /* VERIFICANDO  SE EXISTE ESPACO SUFICIENTE NO SLOT */
+                    horariosLivres = horariosLivres.filter(
+                        (horarios) => horarios.length >= servicoSlots
+                    )
+                    /*VERFICANdO SE OS HORARIOS DENTRO DO SLOT TEM A CONTINUIDADE NECESSARIA */
+
+                    horariosLivres = horariosLivres.map((slot) =>
+                        slot.filter((horario, index) =>
+                            slot.length - index >= servicoSlots
+                        )
+                    ).flat();
+
+                    //formatando horarios de dois em dois//
+                    horariosLivres = _.chunk(horariosLivres, 2);
+
+                    /* 
+                                        REMOVER COLABORADOR CASO NÃO TENHA ESPAÇO */
+
+                    if (horariosLivres.length === 0) {
+                        todosHorariosDia = _.omit(todosHorariosDia, colaboradorId)
+                    } else {
+                        todosHorariosDia[colaboradorId] = horariosLivres
+
+                    }
                 }
-                agenda.push({ [lastDay.format("YYYY-MM-DD")]: todosHorariosDia });
+                /* VERIFICAR SE TEM ESPECIALISTA DISPONÍVEL */
+
+                const totalEspecialistas = Object.keys(todosHorariosDia).length;
+
+                if (totalEspecialistas > 0) {
+                    colaboradores.push(Object.keys(todosHorariosDia))
+                    agenda.push({ [lastDay.format("YYYY-MM-DD")]: todosHorariosDia });
+                }
 
             }
 
@@ -196,8 +251,23 @@ router.post('/dias-disponiveis', async (req, res) => {
         }
 
 
+        /* RECUPERAR DADOS DOS COLABORADORES */
+
+        colaboradores = _.uniq(colaboradores.flat())
+
+        colaboradores = await Colaborador.find({
+            _id: { $in: colaboradores },
+        }).select('nome foto')
+
+        colaboradores = colaboradores.map(c => ({
+            ...c._doc,
+            nome: c.nome.split(' ')[0]
+        }))
+
         res.json({
-            error: false, servicoMinutos,
+            error: false,
+
+            colaboradores,
             agenda
         })
     } catch (err) {
